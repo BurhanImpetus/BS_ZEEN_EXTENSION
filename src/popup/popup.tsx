@@ -5,7 +5,7 @@ import './popup.css'
 const App: React.FC<{}> = () => {
   return (
     <div>
-      <img src="icon.png" />
+      <img src="zeen_login_ss.png" height={400} width={400}/>
     </div>
   )
 }
