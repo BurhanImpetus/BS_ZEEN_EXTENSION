@@ -1,3 +1,17 @@
 body {
-  background-color: #1c1c1c;
+  background-color: #FFFFFF;
+}
+
+input:checked {
+  background-color: #FFFFFF;
+  position: relative;
+}
+
+input:checked::before {
+  content: "✓";
+  font-size: 1.75em;
+  color: #000000;
+  position: absolute;
+  right: 1px;
+  top: -3px;
 }
