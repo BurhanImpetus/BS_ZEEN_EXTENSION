@@ -3,18 +3,20 @@ import { createRoot } from "react-dom/client";
 import "./popup.css";
 
 const App = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
   const [hasError, setHasError] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   useEffect(() => {
-    chrome.storage.sync.get(["userEmail", "isUserLoggedIn"]).then((response) => {
-      setEmail(response.userEmail)
-      setIsLoggedIn(response.isUserLoggedIn)
-    })
-  },[]);
+    chrome.storage.sync
+      .get(["userEmail", "isUserLoggedIn"])
+      .then((response) => {
+        setEmail(response.userEmail);
+        setIsLoggedIn(response.isUserLoggedIn);
+      });
+  }, []);
 
   const handleEmail = (event) => {
     setEmail(event.target.value);
@@ -33,49 +35,56 @@ const App = () => {
     if (email == "" || password == "") {
       setHasError(true);
     } else {
-      chrome.tabs.query({}, function (tabs) {
-        tabs.map((item) => {
-          if(item.url.includes('jcrew.com')){
-            chrome.tabs.sendMessage(
-              item?.id,
-              { type: "renderExtension" },
-              function (response) {
-                chrome.storage.sync.set({userEmail: email, isUserLoggedIn: true}).then(() => {
-                  setHasError(false);
-                  setIsLoggedIn(true);
-                  window.close();
-                  console.log("bslog, extension rendered with response: "+ response);
-                }).catch((error) => {
-                  console.log('bslog error: '+ error)
-                })
+      chrome.storage.sync
+        .set({ userEmail: email, isUserLoggedIn: true })
+        .then(() => {
+          setHasError(false);
+          setIsLoggedIn(true);
+          window.close();
+          chrome.tabs.query({}, function (tabs) {
+            tabs.map((item) => {
+              if (item.url.includes("jcrew.com")) {
+                chrome.tabs.sendMessage(
+                  item?.id,
+                  { type: "renderExtension" },
+                  function (response) {
+                    console.log(
+                      "bslog, extension rendered with response: " + response
+                    );
+                  }
+                );
+              } else {
+                console.log("bslog jcrew webiste is not open");
               }
-            );
-          }else{
-            console.log('bslog jcrew webiste is not open')
-          }
+            });
+          });
         })
-      });
+        .catch((error) => {
+          console.log("bslog error: " + error);
+        });
     }
   };
 
   const handleLogout = () => {
-    chrome.storage.sync.set({userEmail: "", isUserLoggedIn: false}).then(() => {
-    setIsLoggedIn(false);
-    window.close();
-    chrome.tabs.query({}, function(tabs) {
-      tabs.map((item) => {
-        if(item.url.includes('jcrew.com')){
-          chrome.tabs.reload(item?.id);
-        }else{
-          console.log('bslog jcrew webiste is not open')
-        }
-      })
-    });
-    });
-  }
+    chrome.storage.sync
+      .set({ userEmail: "", isUserLoggedIn: false })
+      .then(() => {
+        setIsLoggedIn(false);
+        window.close();
+        chrome.tabs.query({}, function (tabs) {
+          tabs.map((item) => {
+            if (item.url.includes("jcrew.com")) {
+              chrome.tabs.reload(item?.id);
+            } else {
+              console.log("bslog jcrew webiste is not open");
+            }
+          });
+        });
+      });
+  };
 
   const renderLoginForm = () => {
-    return(
+    return (
       <div style={style.formContainer}>
         <form onSubmit={handleSubmit}>
           <input
@@ -121,26 +130,30 @@ const App = () => {
           </span>
         </div>
       </div>
-    )
-  }
+    );
+  };
 
   const renderSignoutView = () => {
-    return(
-      <div style={{display: 'flex', flexDirection: 'column', marginTop: 30}}>
+    return (
+      <div style={{ display: "flex", flexDirection: "column", marginTop: 30 }}>
         <span style={style.userNameStyle}>{email}</span>
-        <span style={style.userNameStyle}>You have been saved on this browser</span>
+        <span style={style.userNameStyle}>
+          You have been saved on this browser
+        </span>
         <div>
-            <button
-              type="submit"
-              style={{ ...style.buttonStyle, marginTop: 60 }}
-              onClick={() => {handleLogout()}}
-            >
-              SIGN OUT
-            </button>
-          </div>
+          <button
+            type="submit"
+            style={{ ...style.buttonStyle, marginTop: 60 }}
+            onClick={() => {
+              handleLogout();
+            }}
+          >
+            SIGN OUT
+          </button>
+        </div>
       </div>
-    )
-  }
+    );
+  };
 
   return (
     <div style={style.mainContainer}>
@@ -150,10 +163,10 @@ const App = () => {
       </div>
       {isLoggedIn ? renderSignoutView() : renderLoginForm()}
       <div style={style.bottomLinkContainer as React.CSSProperties}>
-          <span style={style.bottomTextStyle}>Terms of Use</span>
-          <span style={style.bottomTextStyle}>Privacy Policy</span>
-          <span style={style.bottomTextStyle}>Zeen Business</span>
-        </div>
+        <span style={style.bottomTextStyle}>Terms of Use</span>
+        <span style={style.bottomTextStyle}>Privacy Policy</span>
+        <span style={style.bottomTextStyle}>Zeen Business</span>
+      </div>
     </div>
   );
 };
@@ -183,7 +196,7 @@ const style = {
     marginTop: 10,
     cursor: "pointer",
     paddingLeft: 15,
-    paddingRight: 15
+    paddingRight: 15,
   },
   bottomTextStyle: {
     fontSize: 13,
@@ -220,17 +233,17 @@ const style = {
   checkBoxTextStyle: { marginLeft: 10, fontSize: 14 },
   bottomLinkContainer: {
     display: "flex",
-    width: '80%',
-    position: 'absolute',
+    width: "80%",
+    position: "absolute",
     flexDirection: "row",
     justifyContent: "space-between",
     bottom: 40,
   },
   userNameStyle: {
-    fontWeight: 'bold',
+    fontWeight: "bold",
     fontSize: 14,
-    marginTop: 5
-  }
+    marginTop: 5,
+  },
 };
 
 const container = document.createElement("div");
