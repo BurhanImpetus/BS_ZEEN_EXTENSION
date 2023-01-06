@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import logo from "../../static/zeen_logo.png";
 
 const ZeenBadge = () => {
   const [isExpanded, setIsExpanded] = useState(false);

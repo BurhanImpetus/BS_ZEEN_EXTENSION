@@ -58,7 +58,7 @@ const ZeenHeader = () => {
               top: 80,
               left: "50%",
               cursor: "pointer",
-              width: 30
+              width: 30,
             }}
             width="20"
             height="20"
@@ -76,7 +76,7 @@ const ZeenHeader = () => {
               position: "absolute",
               left: "50%",
               cursor: "pointer",
-              width: 30
+              width: 30,
             }}
             width="20"
             height="20"

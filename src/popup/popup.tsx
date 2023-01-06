@@ -54,7 +54,7 @@ const App = () => {
                   }
                 );
               } else {
-                console.log("bslog jcrew webiste is not open");
+                console.log("bslog jcrew webiste is not active");
               }
             });
           });
@@ -76,7 +76,7 @@ const App = () => {
             if (item.url.includes("jcrew.com")) {
               chrome.tabs.reload(item?.id);
             } else {
-              console.log("bslog jcrew webiste is not open");
+              console.log("bslog jcrew webiste is not active");
             }
           });
         });
